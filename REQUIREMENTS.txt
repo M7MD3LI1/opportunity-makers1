@@ -1,0 +1,101 @@
+=========================================
+  صناع الفرص — Project Requirements
+=========================================
+
+# =====================
+# RUNTIME REQUIREMENTS
+# =====================
+
+Node.js        >= 18.x  (LTS recommended)
+npm            >= 9.x
+Python         >= 3.8   (only needed for git-filter-repo)
+Docker         >= 24.x  (for containerized deployment)
+Docker Compose >= 2.x
+
+# =====================
+# BACKEND DEPENDENCIES
+# =====================
+# (installed via: cd backend && npm install)
+
+express                 ^4.21.2   — HTTP server framework
+@prisma/client          ^6.6.0    — Database ORM
+prisma                  ^6.6.0    — Prisma CLI (dev)
+typescript              ^5.8.3    — TypeScript compiler
+ts-node                 ^10.9.2   — TypeScript runtime
+ts-node-dev             ^2.0.0    — Hot-reload dev server
+bcryptjs                ^3.0.2    — Password hashing
+jsonwebtoken            ^9.0.2    — JWT authentication
+cors                    ^2.8.5    — Cross-Origin Resource Sharing
+dotenv                  ^16.5.0   — Environment variables loader
+helmet                  ^8.1.0    — Security HTTP headers
+express-rate-limit      ^8.3.2    — API rate limiting
+multer                  ^1.4.5    — File upload handling
+nodemailer              ^8.0.5    — Email sending (SMTP)
+uuid                    ^11.1.0   — UUID generation
+groq-sdk                ^1.1.2    — Groq AI SDK
+@google/generative-ai   ^0.24.1   — Gemini AI SDK
+
+# ========================
+# FRONTEND DEPENDENCIES
+# ========================
+# (installed via: cd frontend && npm install)
+
+react                   ^19.2.5   — UI framework
+react-dom               ^19.2.5   — React DOM renderer
+react-router-dom        ^7.14.1   — Client-side routing
+typescript              ~6.0.2    — TypeScript
+vite                    ^8.0.4    — Build tool & dev server
+tailwindcss             ^4.2.2    — CSS utility framework
+framer-motion           ^12.38.0  — Animations
+axios                   ^1.15.0   — HTTP client
+recharts                ^3.8.1    — Charts & graphs
+lucide-react            ^1.8.0    — Icon library
+emoji-picker-react      ^4.18.0   — Emoji picker
+@radix-ui/react-*       various   — Headless UI components
+
+# ==========================
+# ENVIRONMENT VARIABLES
+# ==========================
+# Create file: backend/.env
+# (DO NOT commit this file to git)
+
+DATABASE_URL=file:./dev.db           # SQLite DB path (or PostgreSQL URL for production)
+PORT=5000                            # Backend server port
+JWT_SECRET=<your-long-random-secret> # Min 32 characters
+ENCRYPTION_KEY=<32-char-key>         # Exactly 32 characters for AES-256
+APP_URL=https://your-domain.com      # Frontend URL (used for CORS)
+SMTP_HOST=smtp.gmail.com             # Email server host
+SMTP_PORT=587                        # Email server port
+SMTP_USER=<your-email>               # Email address
+SMTP_PASS=<your-app-password>        # Email app password
+SMTP_FROM="صناع الفرص <email>"       # Sender display name
+UPLOAD_DIR=uploads                   # Directory for uploaded files
+GROQ_API_KEY=<your-groq-key>         # From console.groq.com
+GEMINI_API_KEY=<your-gemini-key>     # From aistudio.google.com
+
+# ==========================
+# DATABASE
+# ==========================
+
+Default: SQLite (file:./dev.db) — suitable for development
+Production: Recommend switching to PostgreSQL on Amazon RDS or Supabase
+
+# ==========================
+# PORTS
+# ==========================
+
+Backend  : 5000
+Frontend : 5173 (dev) / 80 (Docker production via Nginx)
+
+# ==========================
+# EC2 RECOMMENDED SPECS
+# ==========================
+
+Instance Type : t3.small or t3.medium
+OS            : Ubuntu 22.04 LTS (ami-*)
+Storage       : 20 GB SSD (gp3)
+Security Group:
+  - Port 22   (SSH)
+  - Port 80   (HTTP)
+  - Port 443  (HTTPS)
+  - Port 5000 (Backend API — internal only)

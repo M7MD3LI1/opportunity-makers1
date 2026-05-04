@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+dist
+.env
+*.db
+*.db-journal
+uploads/*
+!uploads/.gitkeep
+.DS_Store
+*.pem

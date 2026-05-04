@@ -1,0 +1,224 @@
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS — صناع الفرص Enterprise Animation System
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Pulse Glow ── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px var(--committee-primary, #3b82f6); }
+  50% { box-shadow: 0 0 24px var(--committee-primary, #3b82f6); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Float ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ── Shimmer ── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.08) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ── Scale In ── */
+@keyframes scale-in {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-scale-in {
+  animation: scale-in 0.4s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
+}
+
+/* ── Slide Up Fade ── */
+@keyframes slide-up-fade {
+  0% { transform: translateY(16px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up-fade 0.5s var(--ease-smooth, ease-out) forwards;
+}
+
+/* ── Slide Down Fade ── */
+@keyframes slide-down-fade {
+  0% { transform: translateY(-16px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-down {
+  animation: slide-down-fade 0.5s var(--ease-smooth, ease-out) forwards;
+}
+
+/* ── Stagger Children (use with CSS counter) ── */
+.stagger-children > * {
+  opacity: 0;
+  animation: slide-up-fade 0.5s var(--ease-smooth, ease-out) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 360ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+
+/* ── Rotate In ── */
+@keyframes rotate-in {
+  0% { transform: rotate(-10deg) scale(0.95); opacity: 0; }
+  100% { transform: rotate(0) scale(1); opacity: 1; }
+}
+.animate-rotate-in {
+  animation: rotate-in 0.6s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
+}
+
+/* ── Gradient Shift ── */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* ── Glow Ping ── */
+@keyframes glow-ping {
+  0% { transform: scale(1); opacity: 1; }
+  75% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.animate-glow-ping {
+  animation: glow-ping 1.5s ease-in-out infinite;
+}
+
+/* ── Counter Up (number counting effect via CSS only) ── */
+@keyframes count-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-count-up {
+  animation: count-up 0.6s var(--ease-smooth, ease-out) forwards;
+}
+
+/* ── Dash Draw (for SVG strokes) ── */
+@keyframes dash-draw {
+  0% { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+.animate-dash-draw {
+  stroke-dasharray: 100;
+  animation: dash-draw 1.5s ease-in-out forwards;
+}
+
+/* ── Page Enter ── */
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.animate-page-enter {
+  animation: page-enter 0.5s var(--ease-smooth, ease-out) forwards;
+}
+
+/* ── Ripple ── */
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* ── Orbit ── */
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(40px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
+}
+.animate-orbit {
+  animation: orbit 8s linear infinite;
+}
+
+/* ── Hover Interactions ── */
+.hover-scale {
+  transition: transform var(--duration-normal, 250ms) var(--ease-smooth, ease);
+}
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+.hover-scale:active {
+  transform: scale(0.98);
+}
+
+.hover-lift-sm {
+  transition: all var(--duration-normal, 250ms) var(--ease-smooth, ease);
+}
+.hover-lift-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 16px -4px rgba(0,0,0,0.12));
+}
+
+.hover-glow {
+  transition: box-shadow var(--duration-normal, 250ms) var(--ease-smooth, ease);
+}
+.hover-glow:hover {
+  box-shadow: var(--committee-glow, 0 0 20px rgba(59,130,246,0.3));
+}
+
+/* ── Button Press ── */
+.press-effect {
+  transition: transform var(--duration-fast, 150ms) var(--ease-smooth, ease);
+}
+.press-effect:active {
+  transform: scale(0.95);
+}
+
+/* ── Text Gradient Animation ── */
+.text-gradient-animated {
+  background: linear-gradient(
+    90deg,
+    var(--committee-primary, #3b82f6),
+    var(--committee-secondary, #8b5cf6),
+    var(--committee-primary, #3b82f6)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s linear infinite;
+}
+
+/* ── Border Glow ── */
+.border-glow {
+  position: relative;
+}
+.border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--committee-gradient, linear-gradient(135deg, #3b82f6, #8b5cf6));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity var(--duration-normal, 250ms) var(--ease-smooth, ease);
+}
+.border-glow:hover::before {
+  opacity: 1;
+}

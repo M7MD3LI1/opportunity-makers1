@@ -1,0 +1,317 @@
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — صناع الفرص Enterprise Design System
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Global Palette ── */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.1);
+  --glass-bg-strong: rgba(255, 255, 255, 0.12);
+  --glass-blur: 16px;
+  --glass-blur-heavy: 32px;
+
+  /* ── Elevation / Shadows ── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 16px -4px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px -8px rgba(0, 0, 0, 0.16);
+  --shadow-xl: 0 16px 48px -12px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 24px 64px -16px rgba(0, 0, 0, 0.3);
+  --shadow-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* ── Border Radius ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-3xl: 40px;
+  --radius-full: 9999px;
+
+  /* ── Spacing Scale ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Typography ── */
+  --font-sans: 'Inter', 'Outfit', 'Roboto', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  --font-display: 'Outfit', 'Inter', sans-serif;
+
+  --text-xs: 0.625rem;    /* 10px */
+  --text-sm: 0.75rem;     /* 12px */
+  --text-base: 0.875rem;  /* 14px */
+  --text-lg: 1rem;        /* 16px */
+  --text-xl: 1.125rem;    /* 18px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 3rem;       /* 48px */
+  --text-6xl: 3.75rem;    /* 60px */
+
+  /* ── Transitions ── */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.26, 1.55);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  /* ── Z-Index Scale ── */
+  --z-dropdown: 50;
+  --z-sticky: 60;
+  --z-overlay: 70;
+  --z-modal: 80;
+  --z-popover: 90;
+  --z-toast: 100;
+  --z-max: 200;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMMITTEE THEME PALETTES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── HR: Professional Blue & Emerald ── */
+.committee-hr {
+  --committee-primary: #3b82f6;
+  --committee-primary-light: #60a5fa;
+  --committee-primary-dark: #2563eb;
+  --committee-secondary: #10b981;
+  --committee-secondary-light: #34d399;
+  --committee-accent: #06b6d4;
+  --committee-gradient: linear-gradient(135deg, #3b82f6, #10b981);
+  --committee-gradient-subtle: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(16,185,129,0.08));
+  --committee-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+  --committee-glow-strong: 0 0 40px rgba(59, 130, 246, 0.4);
+  --committee-ring: rgba(59, 130, 246, 0.5);
+
+  --dash-primary: var(--committee-primary);
+  --dash-primary-light: var(--committee-primary-light);
+  --dash-primary-lighter: rgba(59, 130, 246, 0.6);
+}
+
+/* ── PR: Royal Purple & Gold ── */
+.committee-pr {
+  --committee-primary: #8b5cf6;
+  --committee-primary-light: #a78bfa;
+  --committee-primary-dark: #7c3aed;
+  --committee-secondary: #f59e0b;
+  --committee-secondary-light: #fbbf24;
+  --committee-accent: #d946ef;
+  --committee-gradient: linear-gradient(135deg, #8b5cf6, #f59e0b);
+  --committee-gradient-subtle: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(245,158,11,0.08));
+  --committee-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+  --committee-glow-strong: 0 0 40px rgba(139, 92, 246, 0.4);
+  --committee-ring: rgba(139, 92, 246, 0.5);
+
+  --dash-primary: var(--committee-primary);
+  --dash-primary-light: var(--committee-primary-light);
+  --dash-primary-lighter: rgba(139, 92, 246, 0.6);
+}
+
+/* ── OR: Orange & Deep Navy ── */
+.committee-or {
+  --committee-primary: #f97316;
+  --committee-primary-light: #fb923c;
+  --committee-primary-dark: #ea580c;
+  --committee-secondary: #1e3a5f;
+  --committee-secondary-light: #2d5a8e;
+  --committee-accent: #ef4444;
+  --committee-gradient: linear-gradient(135deg, #f97316, #1e3a5f);
+  --committee-gradient-subtle: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(30,58,95,0.08));
+  --committee-glow: 0 0 20px rgba(249, 115, 22, 0.3);
+  --committee-glow-strong: 0 0 40px rgba(249, 115, 22, 0.4);
+  --committee-ring: rgba(249, 115, 22, 0.5);
+
+  --dash-primary: var(--committee-primary);
+  --dash-primary-light: var(--committee-primary-light);
+  --dash-primary-lighter: rgba(249, 115, 22, 0.6);
+}
+
+/* ── Training: Cyan & Indigo ── */
+.committee-training {
+  --committee-primary: #06b6d4;
+  --committee-primary-light: #22d3ee;
+  --committee-primary-dark: #0891b2;
+  --committee-secondary: #6366f1;
+  --committee-secondary-light: #818cf8;
+  --committee-accent: #14b8a6;
+  --committee-gradient: linear-gradient(135deg, #06b6d4, #6366f1);
+  --committee-gradient-subtle: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(99,102,241,0.08));
+  --committee-glow: 0 0 20px rgba(6, 182, 212, 0.3);
+  --committee-glow-strong: 0 0 40px rgba(6, 182, 212, 0.4);
+  --committee-ring: rgba(6, 182, 212, 0.5);
+
+  --dash-primary: var(--committee-primary);
+  --dash-primary-light: var(--committee-primary-light);
+  --dash-primary-lighter: rgba(6, 182, 212, 0.6);
+}
+
+/* ── Social Media: Neon Pink & Dark Slate ── */
+.committee-social {
+  --committee-primary: #ec4899;
+  --committee-primary-light: #f472b6;
+  --committee-primary-dark: #db2777;
+  --committee-secondary: #334155;
+  --committee-secondary-light: #475569;
+  --committee-accent: #a855f7;
+  --committee-gradient: linear-gradient(135deg, #ec4899, #a855f7);
+  --committee-gradient-subtle: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(168,85,247,0.08));
+  --committee-glow: 0 0 20px rgba(236, 72, 153, 0.3);
+  --committee-glow-strong: 0 0 40px rgba(236, 72, 153, 0.4);
+  --committee-ring: rgba(236, 72, 153, 0.5);
+
+  --dash-primary: var(--committee-primary);
+  --dash-primary-light: var(--committee-primary-light);
+  --dash-primary-lighter: rgba(236, 72, 153, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASSMORPHISM UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-inner-glow), var(--shadow-md);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  box-shadow: var(--shadow-inner-glow), var(--shadow-lg);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(var(--glass-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-3xl);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRADIENT UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+
+.gradient-committee {
+  background: var(--committee-gradient);
+}
+
+.gradient-committee-subtle {
+  background: var(--committee-gradient-subtle);
+}
+
+.glow-committee {
+  box-shadow: var(--committee-glow);
+}
+
+.glow-committee-strong {
+  box-shadow: var(--committee-glow-strong);
+}
+
+.gradient-mesh {
+  background:
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.06) 0, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.08) 0, transparent 50%);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR STYLING
+   ═══════════════════════════════════════════════════════════════ */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SELECTION / FOCUS
+   ═══════════════════════════════════════════════════════════════ */
+
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--committee-primary, #3b82f6);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SKELETON LOADING
+   ═══════════════════════════════════════════════════════════════ */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

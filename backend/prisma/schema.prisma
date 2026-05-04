@@ -1,0 +1,693 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  email              String    @unique
+  password           String?
+  username           String?   @unique
+  nationalId         String    @unique
+  gender             String    @default("male")
+  governorate        String    @default("")
+  role               String    @default("USER")
+  status             String    @default("PENDING")
+  mustChangePassword Boolean   @default(false)
+  rejectionReason    String?
+  profilePicture     String?
+  phone              String?
+
+  // Scoring & Gamification
+  score     Int    @default(0)
+  points    Int    @default(0)
+  level     String @default("Beginner")
+
+  // VPI Fields
+  currentVpi       Float  @default(0)
+  cumulativeVpi    Float  @default(0)
+  totalVolunteerHours Float @default(0)
+  requiredMonthlyHours Float @default(20)
+
+  // Security
+  loginAttempts Int       @default(0)
+  lockedUntil   DateTime?
+  lastLoginIp   String?
+
+  createdAt  DateTime @default(now())
+  lastActive DateTime @default(now())
+
+  departmentId Int?
+  department   Department?      @relation(fields: [departmentId], references: [id])
+
+  images       Image[]
+  tasks        TaskSubmission[]
+  badges       UserBadge[]
+  scoreLogs    ScoreLog[]
+  activityLogs ActivityLog[]
+  notifications Notification[]
+  chatMessages  ChatMessage[]
+  evaluations   Evaluation[]
+  vpiRecords    VpiRecord[]
+  monthlyEvaluations MonthlyEvaluation[]
+  volunteerHours VolunteerHour[]
+  rewards       Reward[]
+  violations    Violation[]
+  attendanceRecords AttendanceRecord[]
+  officialDocuments OfficialDocument[]
+  recruitmentApplications RecruitmentApplication[]
+
+  @@map("users")
+}
+
+model Image {
+  id          Int      @id @default(autoincrement())
+  url         String
+  description String?
+  uploadedBy  Int
+  user        User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@map("images")
+}
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  headName  String
+  viceName  String
+  createdAt DateTime @default(now())
+
+  users        User[]
+  tasks        Task[]
+  kpiSnapshots KpiSnapshot[]
+  chatMessages ChatMessage[]
+  events       Event[]
+
+
+  @@map("departments")
+}
+
+model Task {
+  id              Int       @id @default(autoincrement())
+  title           String
+  description     String?
+  deadline        DateTime?
+  points          Int       @default(10)
+  estimatedHours  Float     @default(2)
+  departmentId    Int?
+  department      Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  createdAt       DateTime  @default(now())
+  submissions     TaskSubmission[]
+
+  @@map("tasks")
+}
+
+model TaskSubmission {
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  userId      Int
+  fileUrl     String?
+  notes       String?
+  isOnTime    Boolean  @default(true)
+  quality     String?  // EXCELLENT, VERY_GOOD, GOOD, ACCEPTABLE
+  initiative  Boolean  @default(false)
+  letterGrade String?  // A, B, C, D, F
+  gradeValue  Float    @default(0) // 4.0, 3.0, 2.0, 1.0, 0.0
+  approvedHours Float  @default(0)
+  createdAt   DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@map("task_submissions")
+}
+
+model Meeting {
+  id        Int      @id @default(autoincrement())
+  title     String
+  link      String
+  date      String
+  time      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("meetings")
+}
+
+model Badge {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  name        String
+  nameAr      String
+  description String
+  icon        String
+  color       String    @default("#FFD700")
+  points      Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  userBadges  UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  badgeId   Int
+  earnedAt  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
+
+model ScoreLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  delta     Int
+  reason    String
+  category  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("score_logs")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  action    String
+  details   String?
+  ip        String?
+  severity  String   @default("INFO")
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("activity_logs")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String
+  message   String
+  type      String   @default("INFO")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model KpiSnapshot {
+  id             Int      @id @default(autoincrement())
+  departmentId   Int
+  week           String
+  taskCompletion Float    @default(0)
+  avgTime        Float    @default(0)
+  attendance     Float    @default(0)
+  activityScore  Float    @default(0)
+  missedDeadlines Int     @default(0)
+  createdAt      DateTime @default(now())
+
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@map("kpi_snapshots")
+}
+
+model ChatMessage {
+  id           Int      @id @default(autoincrement())
+  content      String
+  userId       Int
+  departmentId Int?     // Null = General
+  createdAt    DateTime @default(now())
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+}
+
+model Evaluation {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  month            String   // e.g. "2026-07"
+  
+  // Task Evaluatons (Matching Excel)
+  task1Score       Float    @default(0)
+  task1Hours       Float    @default(0)
+  task2Score       Float    @default(0)
+  task2Hours       Float    @default(0)
+  task3Score       Float    @default(0)
+  task3Hours       Float    @default(0)
+  task4Score       Float    @default(0)
+  task4Hours       Float    @default(0)
+  task5Score       Float    @default(0)
+  task5Hours       Float    @default(0)
+
+  // Meeting Evaluations
+  meetingScore     Float    @default(0)
+  meetingHours     Float    @default(0)
+
+  // Calculated Metrics
+  vpiT             Float    @default(0)
+  vpiM             Float    @default(0)
+  kpi              Float    @default(0)
+  achievementRate  Float    @default(0)
+  rating           String?  // Qualitative evaluation (Excellent, etc.)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month])
+  @@map("evaluations")
+}
+
+// ─── VPI SYSTEM MODELS ─────────────────────────────────────────────────────────
+
+model VpiRecord {
+  id                   Int      @id @default(autoincrement())
+  userId               Int
+  month                String   // e.g. "2026-04"
+  
+  // VPI Components
+  taskPerformance      Float    @default(0)  // Weighted task GPA on 4.0 scale
+  monthlyPoints        Float    @default(0)  // Out of 100
+  completedHours       Float    @default(0)
+  requiredHours        Float    @default(20)
+  
+  // Calculated VPI
+  vpiScore             Float    @default(0)  // Final VPI on 4.0 scale
+  
+  // Bonus/Deduction
+  bonusPoints          Float    @default(0)  // Up to +5
+  deductions           Float    @default(0)
+  
+  // Rankings
+  departmentRank       Int      @default(0)
+  overallRank          Int      @default(0)
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, month])
+  @@map("vpi_records")
+}
+
+model MonthlyEvaluation {
+  id                    Int      @id @default(autoincrement())
+  userId                Int
+  month                 String   // e.g. "2026-04"
+  evaluatorId           Int?     // Admin who evaluated
+  
+  // 10 Criteria (each out of 10, total 100)
+  attendance            Float    @default(0)  // الحضور والانضباط
+  taskCompletion        Float    @default(0)  // إنجاز المهام
+  timeCommitment        Float    @default(0)  // الالتزام الزمني
+  reportQuality         Float    @default(0)  // جودة التقارير
+  technicalSkills       Float    @default(0)  // المهارات التقنية
+  professionalConduct   Float    @default(0)  // السلوك المهني
+  innovation            Float    @default(0)  // الابتكار والمبادرة
+  policyCompliance      Float    @default(0)  // الالتزام بالسياسات
+  teamCollaboration     Float    @default(0)  // التعاون الجماعي
+  positiveContribution  Float    @default(0)  // المساهمة الإيجابية
+  
+  // Computed Total
+  totalScore            Float    @default(0)  // Sum of all criteria (out of 100)
+  notes                 String?
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, month])
+  @@map("monthly_evaluations")
+}
+
+model VolunteerHour {
+  id                Int      @id @default(autoincrement())
+  userId            Int
+  month             String   // e.g. "2026-04"
+  hours             Float    @default(0)
+  description       String?
+  category          String   @default("task") // task, meeting, training, event
+  proofUrl          String?  // Uploaded proof document
+  isApproved        Boolean  @default(false)
+  approvedBy        Int?
+  taskSubmissionId  Int?     // Link to a specific task submission
+  
+  createdAt         DateTime @default(now())
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("volunteer_hours")
+}
+
+model Reward {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  type        String   // BONUS_POINTS, BADGE, PROMOTION, RECOMMENDATION, NOMINATION
+  title       String
+  titleAr     String
+  description String?
+  value       Float    @default(0)  // Bonus points value
+  month       String?
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("rewards")
+}
+
+model Violation {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  type         String   // WARNING, POINT_DEDUCTION, SUSPENSION, TERMINATION_RECOMMENDATION
+  severity     String   @default("LOW") // LOW, MEDIUM, HIGH, CRITICAL
+  title        String
+  titleAr      String
+  description  String?
+  pointsDeducted Float  @default(0)
+  month        String?
+  isResolved   Boolean  @default(false)
+  resolvedAt   DateTime?
+  
+  createdAt    DateTime @default(now())
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("violations")
+}
+
+model OfficialDocument {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  type          String   // RECOMMENDATION, VOLUNTEER_CERT, EXPERIENCE_CERT, PERFORMANCE_REPORT
+  purpose       String?  // UNIVERSITY, EMPLOYMENT, MILITARY, SCHOLARSHIP, COMMUNITY
+  title         String
+  titleAr       String
+  content       String?  // Generated content/template data as JSON
+  documentUrl   String?  // Generated PDF URL
+  issuedBy      String?
+  referenceNo   String?  @unique
+  
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("official_documents")
+}
+
+model RecruitmentApplication {
+  id                Int      @id @default(autoincrement())
+  userId            Int
+  currentStage      String   @default("STAGE_1") // STAGE_1, STAGE_2, STAGE_3, ACCEPTED, REJECTED
+  
+  // Stage 1: Online Assessments
+  englishScore      Float?
+  personalityScore  Float?
+  technicalScore    Float?
+  stage1Completed   Boolean  @default(false)
+  stage1Date        DateTime?
+  
+  // Stage 2: Interview
+  interviewScore    Float?
+  interviewNotes    String?
+  interviewerId     Int?
+  stage2Completed   Boolean  @default(false)
+  stage2Date        DateTime?
+  
+  // Stage 3: Practical Simulation
+  simulationScore   Float?
+  simulationNotes   String?
+  stage3Completed   Boolean  @default(false)
+  stage3Date        DateTime?
+  
+  // Final Decision
+  finalDecision     String?  // ACCEPTED, REJECTED, WAITLISTED
+  decisionNotes     String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("recruitment_applications")
+}
+
+model AttendanceRecord {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  date      String   // YYYY-MM-DD
+  status    String   @default("ABSENT") // PRESENT, ABSENT, EXCUSED
+  excuse    String?
+  weight    Float    @default(1.0)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("attendance_records")
+}
+
+model OnboardingMaterial {
+  id        Int      @id @default(autoincrement())
+  title     String
+  type      String   // VIDEO, PDF, LINK
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("onboarding_materials")
+}
+
+model SystemSetting {
+  key   String @id
+  value String
+
+  @@map("system_settings")
+}
+
+// ─── PR COMMITTEE MODELS ───────────────────────────────────────────────────────
+
+model Partner {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String   // GOVERNMENT, CORPORATE, NGO, EDUCATIONAL
+  status      String   @default("PROSPECT") // PROSPECT, NEGOTIATING, ACTIVE, INACTIVE
+  contactName String?
+  email       String?
+  phone       String?
+  tier        String?  // STRATEGIC, GOLD, SILVER, BRONZE
+  since       DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sponsorships Sponsorship[]
+
+  @@map("partners")
+}
+
+model Sponsorship {
+  id        Int      @id @default(autoincrement())
+  partnerId Int
+  amount    Float    @default(0)
+  type      String   // FINANCIAL, IN_KIND, MEDIA
+  status    String   @default("PENDING")
+  notes     String?
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  partner   Partner  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@map("sponsorships")
+}
+
+// ─── OR COMMITTEE MODELS ───────────────────────────────────────────────────────
+
+model Event {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String?
+  location      String?
+  startDate     DateTime
+  endDate       DateTime?
+  status        String   @default("PLANNING") // PLANNING, ONGOING, COMPLETED, CANCELLED
+  budget        Float    @default(0)
+  departmentId  Int?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  department    Department? @relation(fields: [departmentId], references: [id])
+  tasks         EventTask[]
+  inventory     InventoryItem[]
+  budgetRecords BudgetRecord[]
+
+  @@map("events")
+}
+
+model EventTask {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  title     String
+  status    String   @default("PENDING")
+  deadline  DateTime?
+  
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("event_tasks")
+}
+
+model InventoryItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String?
+  quantity    Int      @default(1)
+  status      String   @default("AVAILABLE") // AVAILABLE, IN_USE, DAMAGED, LOST
+  eventId     Int?
+  
+  event       Event?   @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("inventory_items")
+}
+
+model BudgetRecord {
+  id          Int      @id @default(autoincrement())
+  eventId     Int
+  amount      Float
+  type        String   // INCOME, EXPENSE
+  category    String   // CATERING, VENUE, MARKETING, EQUIPMENT, ETC
+  description String?
+  date        DateTime @default(now())
+  
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("budget_records")
+}
+
+// ─── TRAINING COMMITTEE MODELS ─────────────────────────────────────────────────
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  thumbnail   String?
+  category    String?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lessons     Lesson[]
+  quizzes     Quiz[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id        Int      @id @default(autoincrement())
+  courseId  Int
+  title     String
+  content   String?  // Markdown or HTML
+  videoUrl  String?
+  order     Int      @default(0)
+  
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("lessons")
+}
+
+model Quiz {
+  id          Int      @id @default(autoincrement())
+  courseId    Int
+  title       String
+  description String?
+  timeLimit   Int?     // in minutes
+  
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions   Question[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id            Int      @id @default(autoincrement())
+  quizId        Int
+  text          String
+  type          String   @default("MULTIPLE_CHOICE") // MULTIPLE_CHOICE, TRUE_FALSE, TEXT
+  options       String?  // JSON string for choices
+  correctAnswer String
+  
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+// ─── SOCIAL MEDIA COMMITTEE MODELS ─────────────────────────────────────────────
+
+model SocialContent {
+  id            Int      @id @default(autoincrement())
+  title         String
+  platform      String   // FACEBOOK, INSTAGRAM, LINKEDIN, TIKTOK, TWITTER
+  scheduledDate DateTime
+  status        String   @default("DRAFT") // DRAFT, SCHEDULED, POSTED, CANCELLED
+  caption       String?
+  assetUrl      String?
+  engagement    Int      @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("social_content")
+}
+
+model MediaCampaign {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String?
+  startDate     DateTime
+  endDate       DateTime?
+  status        String   @default("PLANNING") // PLANNING, ACTIVE, COMPLETED, CANCELLED
+  platform      String   @default("ALL")
+  reachGoal     String?  // e.g. "100K"
+  currentReach  String?  // e.g. "45K"
+  budget        Float    @default(0)
+  color         String   @default("#ec4899")
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("media_campaigns")
+}
+model MediaAsset {
+  id          Int      @id @default(autoincrement())
+  url         String
+  fileName    String
+  fileType    String   // PNG, JPG, MP4, etc.
+  category    String   @default("SOCIAL_MEDIA") // SOCIAL_MEDIA, PR, etc.
+  uploadedBy  Int?
+  createdAt   DateTime @default(now())
+
+  @@map("media_assets")
+}

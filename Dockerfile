@@ -5,11 +5,9 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app/frontend
 
-# Install dependencies
 COPY frontend/package*.json ./
 RUN npm ci
 
-# Copy source and build
 COPY frontend/ ./
 RUN npm run build
 
@@ -20,14 +18,12 @@ FROM node:20-alpine AS backend-builder
 
 WORKDIR /app/backend
 
-# Install dependencies
 COPY backend/package*.json ./
 RUN npm ci
 
-# Copy source
 COPY backend/ ./
 
-# Generate Prisma client
+# Generate Prisma client for PostgreSQL
 RUN npx prisma generate
 
 # Compile TypeScript
@@ -55,11 +51,9 @@ COPY --from=frontend-builder /app/frontend/dist ./backend/dist/public
 # Create uploads directory
 RUN mkdir -p ./backend/uploads
 
-# Set working directory to backend
 WORKDIR /app/backend
 
-# Expose port
 EXPOSE 5000
 
-# Run DB push + seed + start server
-CMD sh -c "npx prisma db push --accept-data-loss && node dist/index.js"
+# Run Prisma migrations then start the server
+CMD sh -c "npx prisma migrate deploy && node dist/index.js"
